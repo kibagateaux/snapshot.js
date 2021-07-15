@@ -33,8 +33,6 @@ export async function strategy(
     snapshot
   ))[options.pool];
 
-  if(!Object.keys(poolShares).length || !poolGovTokens) return {}
-
   const blockTag = typeof snapshot === 'number' ? snapshot : 'latest';
   const totalPoolShares = await multicall(
     network,
@@ -44,7 +42,7 @@ export async function strategy(
     { blockTag }
   )
 
-  if(!totalPoolShares) return {}
+  if(!totalPoolShares || !poolGovTokens || !Object.keys(poolShares).length) return {}
   const totalShares = parseFloat(formatUnits(totalPoolShares.toString(), options.decimals))
 
   return Object.fromEntries(
